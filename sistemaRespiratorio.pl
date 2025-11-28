@@ -1,139 +1,184 @@
-% ---------------------------------------------------------
-% SISTEMA DE APOIO À DECISÃO PARA DOENÇAS RESPIRATÓRIAS
-% ---------------------------------------------------------
+% 1) FATOS - sintomas por doença
 
-:- initialization(iniciar).
+% --- Tosse
+sintoma(gripe, tosse, intensidade(moderada), prob(0.7), duracao(dias), frequencia(intermitente), comum).
+sintoma(resfriado, tosse, intensidade(leve), prob(0.8), duracao(dias), frequencia(intermitente), comum).
+sintoma(covid19, tosse, intensidade(moderada), prob(0.85), duracao(dias), frequencia(continuo), critico).
+sintoma(influenza, tosse, intensidade(alta), prob(0.9), duracao(dias), frequencia(continuo), critico).
+sintoma(asma, tosse, intensidade(moderada), prob(0.6), duracao(dias), frequencia(intermitente), comum).
+sintoma(rinite, tosse, intensidade(leve), prob(0.4), duracao(dias), frequencia(intermitente), raro).
+sintoma(tuberculose, tosse, intensidade(severa), prob(0.9), duracao(semanas), frequencia(continuo), critico).
+sintoma(pneumonia, tosse, intensidade(severa), prob(0.8), duracao(semanas), frequencia(continuo), critico).
 
-% Carregar a base de fatos enviada
+% --- Falta de ar (Dispneia)
+sintoma(covid19, falta_de_ar, intensidade(severa), prob(0.9), duracao(dias), frequencia(continuo), critico).
+sintoma(influenza, falta_de_ar, intensidade(leve), prob(0.4), duracao(dias), frequencia(raro), comum).
+sintoma(asma, falta_de_ar, intensidade(severa), prob(0.85), duracao(horas_dias), frequencia(intermitente), critico).
+sintoma(tuberculose, falta_de_ar, intensidade(moderada), prob(0.7), duracao(semanas), frequencia(continuo), comum).
+sintoma(pneumonia, falta_de_ar, intensidade(severa), prob(0.85), duracao(semanas), frequencia(continuo), critico).
+sintoma(outras_respiratorias, falta_de_ar, intensidade(moderada), prob(0.75), duracao(dias), frequencia(intermitente), comum).
 
-carregarBase :-
-    ( exists_file('Doencas_respiratorias.pl') ->
-        consult('Doencas_respiratorias.pl'),
-        write('Base de dados carregada com sucesso.'), nl
+% --- Febre
+sintoma(gripe, febre, intensidade(moderada), prob(0.8), duracao(dias), frequencia(continuo), comum).
+sintoma(resfriado, febre, intensidade(leve), prob(0.2), duracao(horas), frequencia(raro), raro).
+sintoma(covid19, febre, intensidade(alta), prob(0.9), duracao(dias), frequencia(continuo), critico).
+sintoma(influenza, febre, intensidade(alta), prob(0.85), duracao(dias), frequencia(continuo), critico).
+sintoma(pneumonia, febre, intensidade(moderada), prob(0.7), duracao(dias), frequencia(continuo), comum).
+
+% --- Congestão Nasal
+sintoma(resfriado, congestao_nasal, intensidade(moderada), prob(0.9), duracao(dias), frequencia(continuo), comum).
+sintoma(rinite, congestao_nasal, intensidade(severa), prob(0.95), duracao(dias), frequencia(continuo), critico).
+sintoma(gripe, congestao_nasal, intensidade(leve), prob(0.3), duracao(dias), frequencia(raro), raro).
+sintoma(covid19, congestao_nasal, intensidade(leve), prob(0.2), duracao(dias), frequencia(raro), raro).
+
+% --- Coriza
+sintoma(resfriado, coriza, intensidade(moderada), prob(0.9), duracao(dias), frequencia(continuo), comum).
+sintoma(rinite, coriza, intensidade(moderada), prob(0.95), duracao(dias), frequencia(continuo), critico).
+sintoma(gripe, coriza, intensidade(leve), prob(0.3), duracao(dias), frequencia(raro), raro).
+
+% --- Espirros
+sintoma(resfriado, espirros, intensidade(leve), prob(0.85), duracao(dias), frequencia(intermitente), comum).
+sintoma(rinite, espirros, intensidade(moderada), prob(0.9), duracao(dias), frequencia(continuo), critico).
+
+% --- Dor de Garganta
+sintoma(resfriado, dor_garganta, intensidade(moderada), prob(0.8), duracao(dias), frequencia(intermitente), comum).
+sintoma(gripe, dor_garganta, intensidade(leve), prob(0.3), duracao(dias), frequencia(raro), raro).
+
+% --- Dor de Cabeça
+sintoma(pneumonia, dor_cabeca, intensidade(moderada), prob(0.6), duracao(dias), frequencia(intermitente), comum).
+sintoma(covid19, dor_cabeca, intensidade(moderada), prob(0.5), duracao(dias), frequencia(intermitente), comum).
+sintoma(influenza, dor_cabeca, intensidade(leve), prob(0.3), duracao(dias), frequencia(raro), raro).
+
+% --- Mal-estar Geral
+sintoma(gripe, mal_estar, intensidade(moderada), prob(0.8), duracao(dias), frequencia(continuo), comum).
+sintoma(covid19, mal_estar, intensidade(alta), prob(0.85), duracao(dias), frequencia(continuo), critico).
+sintoma(pneumonia, mal_estar, intensidade(alta), prob(0.7), duracao(dias), frequencia(continuo), comum).
+
+% --- Fadiga
+sintoma(covid19, fadiga, intensidade(severa), prob(0.85), duracao(dias_semanas), frequencia(continuo), critico).
+sintoma(pneumonia, fadiga, intensidade(severa), prob(0.75), duracao(semanas), frequencia(continuo), critico).
+sintoma(influenza, fadiga, intensidade(moderada), prob(0.4), duracao(dias), frequencia(intermitente), comum).
+
+% --- Chiado no Peito
+sintoma(asma, chiado, intensidade(severa), prob(0.95), duracao(horas_dias), frequencia(intermitente), critico).
+sintoma(doencas_pulmonares_cronicas, chiado, intensidade(moderada), prob(0.8), duracao(semanas), frequencia(continuo), comum).
+
+% --- Perda de Paladar / Olfato
+sintoma(covid19, perda_paladar, intensidade(severa), prob(0.95), duracao(dias_semanas), frequencia(continuo), critico).
+sintoma(covid19, perda_olfato, intensidade(severa), prob(0.95), duracao(dias_semanas), frequencia(continuo), critico).
+sintoma(influenza, perda_paladar, intensidade(leve), prob(0.2), duracao(dias), frequencia(raro), raro).
+
+% --- Hemoptise
+sintoma(tuberculose, hemoptise, intensidade(severa), prob(0.9), duracao(semanas), frequencia(intermitente), critico).
+sintoma(pneumonia, hemoptise, intensidade(moderada), prob(0.3), duracao(dias), frequencia(raro), comum).
+
+% Pesos 
+% =====================================================
+
+pesoClassificacao(comum,1.0).
+pesoClassificacao(raro,0.5). 
+pesoClassificacao(critico,2.0). 
+
+multiplicadorIntensidade(leve,0.8). 
+multiplicadorIntensidade(moderada,1.0). 
+multiplicadorIntensidade(alta,1.1). 
+multiplicadorIntensidade(severa,1.2). 
+
+multiplicadorFrequencia(raro,0.7).
+multiplicadorFrequencia(intermitente,1.0).
+multiplicadorFrequencia(continuo,1.2).
+
+% Regras Aux
+% =====================================================
+
+pertence(X,[X|_]).
+pertence(X,[_|R]) :- pertence(X,R).
+
+
+% Lista de Doenças
+% =====================================================
+
+todasDoencas([
+    gripe, resfriado, covid19, influenza,
+    asma, rinite, tuberculose, pneumonia,
+    outras_respiratorias, doencas_pulmonares_cronicas
+]).
+
+% Calculo de Score por Sintoma
+% =====================================================
+
+calcularScore(Doenca, SintomaUsuario, IntensidadeUsuario, FrequenciaUsuario, ResultadoScore) :-
+    (
+        sintoma(Doenca, SintomaUsuario, intensidade(IntensidadeBase),
+                prob(Prob), _, frequencia(FreqBase), Classificacao)
+    ->
+        pesoClassificacao(Classificacao, Peso),
+        multiplicadorIntensidade(IntensidadeBase, MIb),
+        multiplicadorFrequencia(FreqBase, MFb),
+        multiplicadorIntensidade(IntensidadeUsuario, MIu),
+        multiplicadorFrequencia(FrequenciaUsuario, MFu),
+
+        ResultadoScore is Prob * Peso * MIb * MFb * MIu * MFu
     ;
-        write('ERRO: Arquivo Doencas_respiratorias.pl nao encontrado.'), nl
+        ResultadoScore = 0
     ).
 
-% Pesos e multiplicadores definidos pelo professor
+% Somar Score
+% =====================================================
 
-pesoClassificacao(comum, 1.0).
-pesoClassificacao(raro, 0.5).
-pesoClassificacao(critico, 2.0).
+somarScores(_, [], Acumulado, Acumulado).
 
-multiplicadorIntensidade(leve, 0.8).
-multiplicadorIntensidade(moderada, 1.0).
-multiplicadorIntensidade(alta, 1.1).
-multiplicadorIntensidade(severa, 1.2).
+somarScores(Doenca, [(Sint,I,F)|Resto], Acumulado, ResultadoFinal) :-
+    calcularScore(Doenca, Sint, I, F, Parcial),
+    Novo is Acumulado + Parcial,
+    somarScores(Doenca, Resto, Novo, ResultadoFinal).
 
-multiplicadorFrequencia(raro, 0.7).
-multiplicadorFrequencia(intermitente, 1.0).
-multiplicadorFrequencia(continuo, 1.2).
+% Diagnostico
+% =====================================================
 
-% Função auxiliar para verificar se um item está na lista
-
-pertence(X, [X|_]).
-pertence(X, [_|Cauda]) :- pertence(X, Cauda).
-
-% Listar todas as doenças existentes na base
-
-listarDoencas(Doencas) :-
-    coletarDoencas([], Doencas).
-
-coletarDoencas(Acumulador, ResultadoFinal) :-
-    sintoma(Doenca, _, _, _, _, _, _),
-    ( pertence(Doenca, Acumulador) ->
-        fail
-    ;
-        coletarDoencas([Doenca|Acumulador], ResultadoFinal)
-    ).
-coletarDoencas(Resultado, Resultado).
-
-% Calcular o score de UM sintoma para UMA doença
-
-calcularScoreSintoma(Doenca, SintomaInformado, IntensidadeUser, FrequenciaUser, ScoreFinal) :-
-    ( sintoma(Doenca, SintomaInformado, intensidade(IntBase), prob(P), _, frequencia(FreqBase), Classificacao) ->
-        
-        ( pesoClassificacao(Classificacao, PC) -> true ; PC = 1.0),
-        ( multiplicadorIntensidade(IntBase, MI) -> true ; MI = 1.0),
-        ( multiplicadorFrequencia(FreqBase, MF) -> true ; MF = 1.0),
-
-        % Como o professor pediu fórmula com intensidade e frequencia do usuário:
-        (multiplicadorIntensidade(IntensidadeUser, MIuser) -> true ; MIuser = 1.0 ),
-        (multiplicadorFrequencia(FrequenciaUser, MFuser) -> true ; MFuser = 1.0 ),
-
-        ScoreFinal is P * PC * MI * MF * MIuser * MFuser
-    ;
-        ScoreFinal = 0
-    ).
-
-% Somar os scores de todos os sintomas informados
-
-somarScores(_, [], Ac, Ac).
-somarScores(Doenca, [(Sint, Int, Freq)|Resto], Ac, Resultado) :-
-    calcularScoreSintoma(Doenca, Sint, Int, Freq, Parcial),
-    NovoAc is Ac + Parcial,
-    somarScores(Doenca, Resto, NovoAc, Resultado).
-
-% Diagnosticar doenças baseado nos sintomas fornecidos
+diagnosticar([], _) :-
+    write('ERRO: Nenhum sintoma informado!'), nl,
+    write('Use: perguntarSintomas(L).'), nl,
+    !, fail.
 
 diagnosticar(ListaSintomas, ResultadoFinal) :-
-    listarDoencas(Doencas),
-    avaliarTodas(Doencas, ListaSintomas, [], ResultadoFinal).
+    todasDoencas(Doencas),
+    processar(Doencas, ListaSintomas, [], ResultadoInverso),
+    reverse(ResultadoInverso, ResultadoFinal),
+    exibir(ResultadoFinal).
 
-avaliarTodas([], _, Ac, Ac).
-avaliarTodas([Doenca|Resto], ListaSintomas, Ac, ResultadoFinal) :-
-    somarScores(Doenca, ListaSintomas, 0, Score),
-    avaliarTodas(Resto, ListaSintomas, [Doenca-Score|Ac], ResultadoFinal).
+% Loop para processar doenças
+processar([], _, Acum, Acum).
+processar([D|R], ListaSintomas, Acum, Final) :-
+    somarScores(D, ListaSintomas, 0, Score),
+    processar(R, ListaSintomas, [D-Score | Acum], Final).
 
-% Explicar diagnóstico: detalha o score sintoma por sintoma
+% Exibir resultado
+exibir([]).
+exibir([Doenca-Valor | Resto]) :-
+    format('~w = ~2f~n', [Doenca, Valor]),
+    exibir(Resto).
 
-explicar(Doenca, ListaSintomas, ExplicacaoFinal) :-
-    explicarRec(Doenca, ListaSintomas, [], ExplicacaoFinal).
+% Perguntar Sintomas
+% =====================================================
 
-explicarRec(_, [], Ac, Ac).
-explicarRec(Doenca, [(Sint, Int, Freq)|Resto], Ac, Final) :-
-    calcularScoreSintoma(Doenca, Sint, Int, Freq, Score),
-    explicarRec(Doenca, Resto,
-        [(Sint, intensidade_usuario=Int, frequencia_usuario=Freq, score=Score)|Ac],
-        Final).
+perguntarSintomas(FinalLista) :-
+    perguntar([], FinalLista).
 
-% Perguntar os sintomas ao usuário
-
-perguntarSintomas(ListaFinal) :-
-    write('Digite sintomas (escreva fim para terminar).'), nl,
-    perguntarSintoma([], ListaFinal).
-
-perguntarSintoma(Ac, Ac) :-
-    write('Sintoma: '),
+perguntar(Acumulado, Final) :-
+    write('Sintoma (digite fim para encerrar): '),
     read_line_to_string(user_input, S),
-    string_lower(S, "fim"), !.
-
-perguntarSintoma(Ac, ListaFinal) :-
-    write('Sintoma: '),
-    read_line_to_string(user_input, SintStr),
-
-    ( string_lower(SintStr, "fim") ->
-        ListaFinal = Ac
+    ( string_lower(S, "fim") ->
+        Final = Acumulado, !
     ;
-        atom_string(SintomaAtom, SintStr),
-
+        atom_string(Sintoma, S),
         write('Intensidade (leve/moderada/alta/severa): '),
         read_line_to_string(user_input, Istr),
-        atom_string(IntAtom, Istr),
+        atom_string(Intensidade, Istr),
 
         write('Frequencia (raro/intermitente/continuo): '),
         read_line_to_string(user_input, Fstr),
-        atom_string(FreqAtom, Fstr),
+        atom_string(Frequencia, Fstr),
 
-        % Adiciona o novo sintoma completo
-        perguntarSintoma([(SintomaAtom, IntAtom, FreqAtom)|Ac], ListaFinal)
+        perguntar([(Sintoma, Intensidade, Frequencia)|Acumulado], Final)
     ).
-
-% Iniciar sistema
-
-iniciar :-
-    carregarBase,
-    nl,
-    write('Sistema de Apoio a Doenças Respiratorias iniciado.'), nl,
-    write('Use: perguntarSintomas(L), diagnosticar(L, Resultado).'), nl,
-    write('Ou: diagnosticar([(tosse,moderada,continuo)], R).'), nl, nl.
