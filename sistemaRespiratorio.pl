@@ -143,42 +143,62 @@ diagnosticar([], _) :-
 
 diagnosticar(ListaSintomas, ResultadoFinal) :-
     todasDoencas(Doencas),
-    processar(Doencas, ListaSintomas, [], ResultadoInverso),
-    reverse(ResultadoInverso, ResultadoFinal),
+    processar(Doencas, ListaSintomas, [], ResultadoInvertido),
+    reverse(ResultadoInvertido, ResultadoFinal),
     exibir(ResultadoFinal).
 
-% Loop para processar doenças
-processar([], _, Acum, Acum).
-processar([D|R], ListaSintomas, Acum, Final) :-
-    somarScores(D, ListaSintomas, 0, Score),
-    processar(R, ListaSintomas, [D-Score | Acum], Final).
+processar([], _, Ac, Ac).
+processar([D|R], ListaSint, Ac, Final) :-
+    somarScores(D, ListaSint, 0, Score),
+    processar(R, ListaSint, [D-Score|Ac], Final).
 
-% Exibir resultado
-exibir([]).
-exibir([Doenca-Valor | Resto]) :-
-    format('~w = ~2f~n', [Doenca, Valor]),
-    exibir(Resto).
-
-% Perguntar Sintomas
+% Exibir os Resultados
 % =====================================================
 
-perguntarSintomas(FinalLista) :-
-    perguntar([], FinalLista).
+exibir([]).
+exibir([Doenca-Valor | R]) :-
+    format('~w = ~2f~n', [Doenca, Valor]),
+    exibir(R).
 
-perguntar(Acumulado, Final) :-
+%  Perguntar os Sintomas do paciente
+% =====================================================
+
+perguntarSintomas(Final) :-
+    perguntar([], Final).
+
+perguntar(Ac, Final) :-
     write('Sintoma (digite fim para encerrar): '),
     read_line_to_string(user_input, S),
-    ( string_lower(S, "fim") ->
-        Final = Acumulado, !
+    (   string_lower(S, "fim") ->
+        Final = Ac, !
     ;
-        atom_string(Sintoma, S),
-        write('Intensidade (leve/moderada/alta/severa): '),
-        read_line_to_string(user_input, Istr),
-        atom_string(Intensidade, Istr),
-
-        write('Frequencia (raro/intermitente/continuo): '),
-        read_line_to_string(user_input, Fstr),
-        atom_string(Frequencia, Fstr),
-
-        perguntar([(Sintoma, Intensidade, Frequencia)|Acumulado], Final)
+        (   S = "" ->
+            write('ERRO: Digite um sintoma valido!'), nl,
+            perguntar(Ac, Final)
+        ;
+            atom_string(Sintoma, S),
+            pedirIntensidade(Int),
+            pedirFrequencia(Freq),
+            perguntar([(Sintoma,Int,Freq)|Ac], Final)
+        )
     ).
+
+pedirIntensidade(I) :-
+    write('Intensidade (leve/moderada/alta/severa): '),
+    read_line_to_string(user_input, S),
+    atom_string(Int, S),
+    ( Int = leve ; Int = moderada ; Int = alta ; Int = severa ) ->
+        I = Int
+    ;
+        write('ERRO: Intensidade invalida!'), nl,
+        pedirIntensidade(I).
+
+pedirFrequencia(F) :-
+    write('Frequencia (raro/intermitente/continuo): '),
+    read_line_to_string(user_input, S),
+    atom_string(Freq, S),
+    ( Freq = raro ; Freq = intermitente ; Freq = continuo ) ->
+        F = Freq
+    ;
+        write('ERRO: Frequencia invalida!'), nl,
+        pedirFrequencia(F).
